@@ -1,0 +1,20 @@
+#main{
+    width: 800px;
+    margin: 0 auto;
+}
+#main h1, h6{
+    text-align: center;
+}
+
+#entry-fields{
+    margin: 0 auto;
+    width: 500px;
+}
+
+#ok-btn-container{
+    padding: 10px;
+    text-align: center;
+}
+#ok-btn-container button{
+    width: 300px;
+}
