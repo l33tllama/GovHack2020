@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from flask import Flask, request, render_template
+import urllib.request
 import configparser
 
 # Flask App
@@ -13,6 +14,20 @@ config = configparser.ConfigParser()
 config.read(config_filename)
 
 api_key = config['Main']['GoogleAPIKey']
+
+# Get
+def osrm_request(start, end, transport_type):
+    start_lat = start[0]
+    start_lon = start[1]
+    end_lat = end[0]
+    end_lon = end[1]
+
+    osrm_url = "http://127.0.0.1:5000/route/v1/{ttype}/{s_lon},{s_lat};{e_lon},{e_lat}?steps=true"\
+        .format(ttype=transport_type, s_lon=start_lon, s_lat=start_lat, e_lon=end_lon, e_lat=end_lat)
+
+    contents = urllib.request.urlopen(osrm_url).read()
+    return contents
+
 
 # Disable caching!
 @app.after_request
@@ -30,6 +45,15 @@ def add_header(r):
 @app.route("/")
 def main():
     return render_template('index.html', google_api_key=api_key)
+
+@app.route("/get_results")
+def get_results():
+    start = [float(request.args.get("start_lat")), float(request.args.get("start_lon"))]
+    end = [float(request.args.get("end_lat")), float(request.args.get("end_lon"))]
+
+    response = osrm_request(start, end, "driving")
+
+    return str(response)
 
 
 def run():

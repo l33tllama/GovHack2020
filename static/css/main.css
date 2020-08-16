@@ -1,14 +1,88 @@
-#main{
-    width: 800px;
-    margin: 0 auto;
+#bg{
+    height: 100%;
+    background-color: #c8cbcf;
 }
+#bg-image{
+    position: fixed;
+    background-image: url("../img/pexels-brett-sayles-2314658_small.jpg");
+    background-size: auto 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+#bg-image[blur=true]{
+    filter: blur(4px);
+}
+
+#main-content{
+    opacity: 0.99;
+}
+#main{
+    margin: 0 auto;
+    /*opacity: 0.5;*/
+    background-color: rgba(0,0,0,0) !important;
+}
+@media (min-width: 800px) {
+    #main{
+        width: 800px;
+        height: 1200px;
+    }
+    #bg-image{
+        background-size: 800px;
+        width: 800px;
+        box-shadow: 1px 1px 90px #444;
+        height: 1200px;
+    }
+    #entry-fields{
+        margin: 0 auto !important;
+        width: 550px;
+    }
+    #ok-btn-container button{
+        width: 300px;
+    }
+}
+
+#entry-fields{
+    text-align: center;
+}
+
+#entry-fields h3{
+    text-align: left;
+}
+
+#main h1{
+    color: #4D41BE;
+    font-weight: bold;
+}
+
+#main h6{
+    color: #4D41BE;
+}
+
 #main h1, h6{
     text-align: center;
 }
 
-#entry-fields{
-    margin: 0 auto;
-    width: 500px;
+#main:before[blur=true]{
+    fliter: blur(4px);
+}
+
+#about, #entry-fields, #instructions{
+    background: rgba(255, 255, 255, 0.7);
+    padding: 15px;
+    margin: 20px;
+}
+
+#searchTextField1, #searchTextField2{
+    width: 90%;
+}
+
+#results{
+    min-height: 260px;
 }
 
 #ok-btn-container{
@@ -16,5 +90,13 @@
     text-align: center;
 }
 #ok-btn-container button{
-    width: 300px;
+    width: 60%;
+}
+#hhs-logo-ctr{
+    text-align: center;
+}
+#hhs-logo{
+    margin-top: 10px;
+    width: 40%;
+    border: 1px solid #005cbf;
 }
