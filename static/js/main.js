@@ -5,8 +5,8 @@ function generate_results(){
         var start_lat = place1.geometry.location.lat();
         var start_lon = place1.geometry.location.lng();
 
-        var end_lat = place1.geometry.location.lat();
-        var end_lon = place1.geometry.location.lng();
+        var end_lat = place2.geometry.location.lat();
+        var end_lon = place2.geometry.location.lng();
 
         $.ajax("/get_results?start_lat=" + start_lat + "&start_lon=" + start_lon + "&end_lat=" + end_lat + "&end_lon=" + end_lon)
             .done(function(resp){

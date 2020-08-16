@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from flask import Flask, request, render_template
 import urllib.request
+import urllib.error
 import configparser
+import json
 
 # Flask App
 app = Flask(__name__, static_folder="static")
@@ -16,7 +18,7 @@ config.read(config_filename)
 api_key = config['Main']['GoogleAPIKey']
 
 # Get
-def osrm_request(start, end, transport_type):
+def osrm_exclude_request(start, end, transport_type):
     start_lat = start[0]
     start_lon = start[1]
     end_lat = end[0]
@@ -24,8 +26,29 @@ def osrm_request(start, end, transport_type):
 
     osrm_url = "http://127.0.0.1:5000/route/v1/{ttype}/{s_lon},{s_lat};{e_lon},{e_lat}?steps=true"\
         .format(ttype=transport_type, s_lon=start_lon, s_lat=start_lat, e_lon=end_lon, e_lat=end_lat)
+    print(osrm_url)
+    try:
+        contents = urllib.request.urlopen(osrm_url).read()
+    except urllib.error.HTTPError:
+        contents = b'{"waypoints":[]}'
+    print(contents)
+    return contents
 
-    contents = urllib.request.urlopen(osrm_url).read()
+# Get
+def osrm_normal_request(start, end, transport_type):
+    start_lat = start[0]
+    start_lon = start[1]
+    end_lat = end[0]
+    end_lon = end[1]
+
+    osrm_url = "http://127.0.0.1:5001/route/v1/{ttype}/{s_lon},{s_lat};{e_lon},{e_lat}?steps=true"\
+        .format(ttype=transport_type, s_lon=start_lon, s_lat=start_lat, e_lon=end_lon, e_lat=end_lat)
+    print(osrm_url)
+    try:
+        contents = urllib.request.urlopen(osrm_url).read()
+    except urllib.error.HTTPError:
+        contents = b'{"waypoints":[]}'
+    print(contents)
     return contents
 
 
@@ -51,9 +74,28 @@ def get_results():
     start = [float(request.args.get("start_lat")), float(request.args.get("start_lon"))]
     end = [float(request.args.get("end_lat")), float(request.args.get("end_lon"))]
 
-    response = osrm_request(start, end, "driving")
+    response_1 = osrm_exclude_request(start, end, "driving")
+    response_2 = osrm_normal_request(start, end, "driving")
 
-    return str(response)
+    resp_1_str = response_1.decode('UTF-8')
+    resp_2_str = response_2.decode('UTF-8')
+
+    exc = json.loads(resp_1_str)
+    nor = json.loads(resp_2_str)
+
+    len_exc = len(exc["waypoints"])
+    len_nor = len(nor["waypoints"])
+
+    response = "ERROR"
+
+    if len_exc == 0 or len_exc > len_nor:
+        response = "Recommended top take a car or bus."
+    elif len_exc <= len_nor:
+        response = "You can take an escooter, ebike, etc easily!"
+
+    print("Len exc: " + str(len_exc) + " len nor: " + str(len_nor))
+
+    return response
 
 
 def run():
